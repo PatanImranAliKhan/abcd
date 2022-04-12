@@ -1,0 +1,14 @@
+library(funModeling)
+library(tidyverse)
+library(Hmisc)
+data<-read.csv("~/Iris.csv")
+print(data)
+basic_eda<-funtion(data){
+  summary(data)
+  glimpse(data)
+  plot_num(data)
+  describe(data)
+  print(status(data))
+  freq(data)
+}
+basic_eda(data)

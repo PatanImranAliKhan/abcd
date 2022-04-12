@@ -1,0 +1,32 @@
+library(arules)
+library(arulesViz)
+data(Groceries)
+Groceries
+summary(Groceries)
+class(Groceries)
+Groceries@itemInfo[1:20,]
+apply(Groceries@data[,10:20],2,function(r) paste(Groceries@itemInfo[r,"labels"],collapse = ","))
+itemsets <- apriori(Groceries,parameter = list(minlen=1,maxlen=1,support=0.02,target="frequent itemsets"))
+summary(itemsets)
+inspect(head(sort(itemsets,by="support"),10))
+itemsets <- apriori(Groceries,parameter = list(minlen=2,maxlen=2,support=0.02,target="frequent itemsets"))
+summary(itemsets)
+inspect(head(sort(itemsets,by="support"),10))
+itemsets <- apriori(Groceries,parameter = list(minlen=3,maxlen=3,support=0.02,target="frequent itemsets"))
+summary(itemsets)
+inspect(sort(itemsets,by="support"))
+itemsets <- apriori(Groceries,parameter = list(minlen=4,maxlen=4,support=0.02,target="frequent itemsets"))
+summary(itemsets)
+itemsets <- apriori(Groceries,parameter = list(minlen=1,support=0.02,target="frequent itemsets"))
+rules <- apriori(Groceries,parameter = list(support=0.001,confidence=0.6,target="rules"))
+summary(rules)
+# compute the 1/Support(Y)
+slope <- sort(round(rules@quality$lift / rules@quality$confidence, 2))
+# Display the number of times each slope appears in the dataset
+unlist(lapply(split(slope,f=slope),length))
+inspect(head(sort(rules,by="lift"),10))
+confidentRules <- rules[quality(rules)$confidence > 0.9]
+confidentRules
+plot(confidentRules,method="matrix",measure=c("lift","confidence"),control=list(reorder=TRUE))
+highLiftRules <-head(sort(rules,by="lift"),5)
+plot(highLiftRules,method="graph",control=list(type="items"))
